@@ -1,0 +1,15 @@
+.spacer {
+  flex: 1 1 auto;
+}
+.brand {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+.custom-toolbar{
+  background-color: #245451;
+  color: #eeeeee;
+}
+
+.custom-button {
+  color: #ffffff;
+}
