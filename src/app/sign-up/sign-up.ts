@@ -3,6 +3,9 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
+import {UserService, UserProfileDto} from '../services/user.service';
+import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
@@ -10,37 +13,45 @@ import {MatButtonModule} from '@angular/material/button';
   imports: [ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule],
+    MatButtonModule, MatDatepickerToggle, MatDatepicker, MatDatepickerInput],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.css'
 })
 export class SignUp {
   signUpForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+              private userService: UserService,
+              private router: Router) {
     this.signUpForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       email: ['', [Validators.required, Validators.email]],
-      fullName: ['', Validators.required],
-      phoneNumber: ['', Validators.required]
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      phoneNumber: ['', Validators.required],
+      dateOfBirth: ['', Validators.required]
     });
   }
 
   onSubmit(): void {
     if (this.signUpForm.valid) {
-      const formData = this.signUpForm.value;
-      console.log('Form submitted:', formData);
+      // const user: UserProfileDto = this.signUpForm.value;
+      const rawValue = this.signUpForm.value;
 
-      // TODO: Call your backend API using HttpClient to register the user
-      // Example:
-      // this.userService.registerUser(formData).subscribe(response => {
-      //   console.log('User registered:', response);
-      // }, error => {
-      //   console.error('Registration error:', error);
-      // });
-    } else {
-      console.warn('Form is invalid');
-    }
+      const user: UserProfileDto = {
+        ...rawValue,
+        dateOfBirth: rawValue.dateOfBirth.toISOString().split('T')[0]
+      };
+      this.userService.register(user).subscribe({
+        next: response => {
+          console.log('Registration successful:', response);
+          this.router.navigate(['/login']);
+        },
+        error: err => {
+          console.error('Registration failed:', err);
+        }
+      });
+      }
   }
 }
