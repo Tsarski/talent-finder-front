@@ -1,20 +1,55 @@
 <div class="login-container">
   <mat-card class="login-card">
-    <h2>Login</h2>
-    <form (ngSubmit)="onLogin()">
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Username</mat-label>
-        <input matInput name="username" [(ngModel)]="username" required />
-      </mat-form-field>
+    <mat-card-header>
+      <mat-card-title>Login</mat-card-title>
+    </mat-card-header>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Password</mat-label>
-        <input matInput name="password" [(ngModel)]="password" type="password" required />
-      </mat-form-field>
+    <mat-card-content>
+      <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+        <!-- Error message display -->
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
 
-      <button mat-raised-button color="primary" type="submit" class="full-width">
-        Login
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Username</mat-label>
+          <input
+            matInput
+            name="username"
+            [(ngModel)]="username"
+            required
+            [disabled]="isLoading" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            name="password"
+            [(ngModel)]="password"
+            type="password"
+            required
+            [disabled]="isLoading" />
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="full-width login-button"
+          [disabled]="isLoading || !loginForm.form.valid">
+
+          <mat-spinner *ngIf="isLoading" diameter="20" class="spinner"></mat-spinner>
+          <span *ngIf="!isLoading">Login</span>
+          <span *ngIf="isLoading">Logging in...</span>
+        </button>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-button color="accent" (click)="goToRegister()" [disabled]="isLoading">
+        Don't have an account? Sign up
       </button>
-    </form>
+    </mat-card-actions>
   </mat-card>
 </div>

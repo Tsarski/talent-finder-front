@@ -2,6 +2,7 @@
   <span class="brand">🎭 Talent Finder</span>
   <span class="spacer"></span>
   <button mat-button class="custom-button" routerLink="/">Home</button>
-  <button mat-button class="custom-button" routerLink="/login">Login</button>
-  <button mat-button class="custom-button" routerLink="/sign-up">Sign Up</button>
+  <button mat-button class="custom-button" routerLink="/login" *ngIf="!isLogged()">Login</button>
+  <button mat-button class="custom-button" routerLink="/sign-up" *ngIf="!isLogged()">Sign Up</button>
+  <button mat-button class="custom-button" (click)="logout()" *ngIf="isLogged()">Log Out</button>
 </mat-toolbar>
