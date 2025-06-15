@@ -1,1 +1,81 @@
-<p>home works!</p>
+<div class="home-container">
+  <div class="header-section">
+    <h1>Talent Finder</h1>
+    <p>Discover amazing services from talented professionals</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading services...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <p class="error-message">{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadServices()">
+      Retry
+    </button>
+  </div>
+
+  <!-- Services Grid -->
+  <div *ngIf="!loading && !error && services.length > 0" class="services-grid">
+    <mat-grid-list
+      [cols]="getCols()"
+      rowHeight="400px"
+      gutterSize="20px">
+
+      <mat-grid-tile *ngFor="let service of services">
+        <mat-card
+          class="service-card"
+          (click)="onServiceClick(service)"
+          [attr.aria-label]="'Service: ' + service.title">
+
+          <!-- Service Image -->
+          <div class="image-container">
+            <img
+              mat-card-image
+              [src]="service.mainPicture"
+              [alt]="service.title"
+              (error)="onImageError($event)"
+              class="service-image">
+
+            <!-- Category Chip -->
+            <mat-chip-set class="category-chip">
+              <mat-chip *ngIf="service.serviceCategory">
+                {{ service.serviceCategory }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+
+          <!-- Card Content -->
+          <mat-card-content class="card-content">
+            <div class="service-info">
+              <h3 class="service-title" [title]="service.title">
+                {{ service.title }}
+              </h3>
+
+              <div class="owner-info">
+                <span class="owner-name">
+                  by {{ getFullName(service.user) }}
+                </span>
+              </div>
+
+              <div class="price-section">
+                <span class="price">
+                  ${{ service.price | number:'1.2-2' }}
+                </span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !error && services.length === 0" class="empty-state">
+    <h2>No services available</h2>
+    <p>Check back later for new services!</p>
+  </div>
+</div>
