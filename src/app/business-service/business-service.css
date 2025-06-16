@@ -1,0 +1,373 @@
+.business-service-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Back Button */
+.back-button-container {
+  margin-bottom: 20px;
+}
+
+.back-button {
+  background-color: #f5f5f5;
+}
+
+.back-button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Loading and Error States */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.loading-container p {
+  margin-top: 20px;
+  color: #666;
+}
+
+.error-container {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.error-icon {
+  font-size: 48px;
+  color: #f44336;
+  margin-bottom: 16px;
+}
+
+.error-message {
+  color: #f44336;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+
+/* Service Details */
+.service-details {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Title Section */
+.title-section {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.service-title {
+  font-size: 2.5rem;
+  font-weight: 400;
+  margin: 0 0 16px 0;
+  color: #333;
+}
+
+.service-location {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0 0 16px 0;
+  color: #333;
+}
+
+.service-meta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #2196F3;
+}
+
+/* Author Section */
+.author-section {
+  margin-bottom: 0;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.author-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #666;
+}
+
+.author-details h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.4rem;
+  color: #333;
+}
+
+.username {
+  margin: 0;
+  color: #666;
+  font-style: italic;
+}
+
+/* Pictures Section */
+.pictures-section .mat-mdc-card-content {
+  padding: 16px !important;
+}
+
+.main-image-container {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.main-image {
+  max-width: 100%;
+  max-height: 500px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.thumbnails-container {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.thumbnail {
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.thumbnail:hover {
+  border-color: #2196F3;
+  transform: scale(1.05);
+}
+
+.thumbnail.selected {
+  border-color: #2196F3;
+  box-shadow: 0 0 8px rgba(33, 150, 243, 0.3);
+}
+
+.thumbnail img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Videos Section */
+.videos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+}
+
+.video-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+/* Description Section */
+.description-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #333;
+  white-space: pre-wrap;
+}
+
+/* Reviews Section */
+.no-reviews {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.review-item {
+  padding: 16px 0;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.reviewer-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reviewer-icon {
+  color: #666;
+}
+
+.reviewer-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.rating-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.star-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: #ddd;
+}
+
+.star-icon.filled {
+  color: #ffc107;
+}
+
+.review-text {
+  margin: 8px 0 16px 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* Add Review Section */
+.add-review-section {
+  background-color: #f9f9f9;
+}
+
+.form-row {
+  margin-bottom: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.rating-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rating-stars-inline {
+  display: flex;
+  gap: 2px;
+}
+
+.rating-stars-inline .star-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.form-actions {
+  text-align: right;
+}
+
+.form-actions button {
+  min-width: 150px;
+}
+
+.form-actions button mat-spinner {
+  margin-right: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .business-service-container {
+    padding: 16px;
+  }
+
+  .service-title {
+    font-size: 2rem;
+  }
+
+  .service-meta {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .price {
+    font-size: 1.5rem;
+  }
+
+  .author-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+
+  .review-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .videos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .thumbnails-container {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .thumbnail {
+    flex-shrink: 0;
+  }
+}
+
+/* Card Styling */
+.mat-mdc-card {
+  margin-bottom: 0;
+  border-radius: 12px;
+}
+
+.mat-mdc-card-header {
+  padding-bottom: 8px;
+}
+
+.mat-mdc-card-title {
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+/* Form Field Styling */
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-form-field-infix {
+  min-height: 48px;
+}
+
+/* Chip Styling */
+.mat-mdc-chip {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}

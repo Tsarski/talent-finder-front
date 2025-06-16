@@ -5,6 +5,7 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatChipsModule} from '@angular/material/chips';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {Router} from '@angular/router';
 
 // Interface matching your DTOs
 interface PublicUserDataDto {
@@ -46,7 +47,7 @@ export class Home implements OnInit {
 
   private apiUrl = 'http://localhost:8080/api/services/getAll'
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     this.loadServices();
@@ -75,8 +76,8 @@ export class Home implements OnInit {
   }
 
   onServiceClick(service: BusinessServicePreviewDto): void {
-    // Handle service click - navigate to detail page or show more info
-    console.log('Service clicked:', service);
+    console.log("clicked on service ---->", service.id);
+    this.router.navigate(['/service', service.id]);
   }
 
   onImageError(event: any): void {

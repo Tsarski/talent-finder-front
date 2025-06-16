@@ -1,0 +1,204 @@
+<div class="business-service-container">
+  <!-- Back Button -->
+  <div class="back-button-container">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading service details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <mat-icon class="error-icon">error</mat-icon>
+    <p class="error-message">{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadService()">
+      Try Again
+    </button>
+  </div>
+
+  <!-- Service Details -->
+  <div *ngIf="service && !loading && !error" class="service-details">
+
+    <!-- Title Section -->
+    <div class="title-section">
+      <h1 class="service-title">{{ service.title }}</h1>
+      <div class="service-meta">
+        <mat-chip-set>
+          <mat-chip *ngIf="service.serviceCategory">{{ service.serviceCategory }}</mat-chip>
+        </mat-chip-set>
+        <span class="price">€{{ service.price | number:'1.2-2' }}</span>
+      </div>
+      <h2 class="service-location">{{service.location}}</h2>
+    </div>
+
+    <!-- Author Section -->
+    <mat-card class="author-section">
+      <mat-card-content>
+        <div class="author-info">
+          <mat-icon class="author-icon">person</mat-icon>
+          <div class="author-details">
+            <h3>{{ getFullName(service.user) }}</h3>
+            <p class="username">{{ service.user.username }}</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Pictures Section -->
+    <mat-card *ngIf="service.pictures && service.pictures.length > 0" class="pictures-section">
+      <mat-card-header>
+        <mat-card-title>Gallery</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <!-- Main Image -->
+        <div class="main-image-container">
+          <img
+            [src]="service.pictures[selectedImageIndex]"
+            [alt]="service.title"
+            (error)="onImageError($event)"
+            class="main-image">
+        </div>
+
+        <!-- Thumbnail Images -->
+        <div *ngIf="service.pictures.length > 1" class="thumbnails-container">
+          <div
+            *ngFor="let picture of service.pictures; let i = index"
+            class="thumbnail"
+            [class.selected]="i === selectedImageIndex"
+            (click)="selectImage(i)">
+            <img
+              [src]="picture"
+              [alt]="'Thumbnail ' + (i + 1)"
+              (error)="onImageError($event)">
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Videos Section -->
+    <mat-card *ngIf="service.videos && service.videos.length > 0" class="videos-section">
+      <mat-card-header>
+        <mat-card-title>Videos</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="videos-grid">
+          <div *ngFor="let video of service.videos" class="video-container">
+            <iframe
+              [src]="getYouTubeEmbedUrl(video)"
+              frameborder="0"
+              allowfullscreen
+              class="video-frame">
+            </iframe>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Description Section -->
+    <mat-card class="description-section">
+      <mat-card-header>
+        <mat-card-title>Description</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p class="description-text">{{ service.description }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Reviews Section -->
+    <mat-card class="reviews-section">
+      <mat-card-header>
+        <mat-card-title>Reviews ({{ service.reviews.length }})</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="service.reviews.length === 0" class="no-reviews">
+          <p>No reviews yet. Be the first to review this service!</p>
+        </div>
+
+        <div *ngFor="let review of service.reviews" class="review-item">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <mat-icon class="reviewer-icon">account_circle</mat-icon>
+              <span class="reviewer-name">{{ review.author }}</span>
+            </div>
+            <div class="rating-stars">
+              <mat-icon
+                *ngFor="let star of getStarArray(review.rating)"
+                [class.filled]="star"
+                class="star-icon">
+                {{ star ? 'star' : 'star_border' }}
+              </mat-icon>
+            </div>
+          </div>
+          <p class="review-text">{{ review.description }}</p>
+          <mat-divider *ngIf="!last"></mat-divider>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Add Review Section -->
+    <mat-card class="add-review-section">
+      <mat-card-header>
+        <mat-card-title>Add Your Review</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="reviewForm" (ngSubmit)="onSubmitReview()">
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Rating</mat-label>
+              <mat-select formControlName="rating">
+                <mat-option *ngFor="let num of getRatingNumbers()" [value]="num">
+                  <div class="rating-option">
+                    <span>{{ num }}</span>
+                    <div class="rating-stars-inline">
+                      <mat-icon *ngFor="let star of getStarArray(num)" class="star-icon filled">
+                        star
+                      </mat-icon>
+                    </div>
+                  </div>
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="reviewForm.get('rating')?.hasError('required')">
+                Please select a rating
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Your Review</mat-label>
+              <textarea
+                matInput
+                formControlName="description"
+                rows="4"
+                placeholder="Share your experience with this service...">
+              </textarea>
+              <mat-error *ngIf="reviewForm.get('description')?.hasError('required')">
+                Please write a review
+              </mat-error>
+              <mat-error *ngIf="reviewForm.get('description')?.hasError('minlength')">
+                Review must be at least 10 characters long
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-actions">
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="!reviewForm.valid || submittingReview">
+              <mat-spinner *ngIf="submittingReview" diameter="20"></mat-spinner>
+              <span *ngIf="!submittingReview">Submit Review</span>
+              <span *ngIf="submittingReview">Submitting...</span>
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
