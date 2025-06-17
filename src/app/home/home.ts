@@ -4,8 +4,15 @@ import {MatCardModule} from '@angular/material/card';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatIconModule} from '@angular/material/icon';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {Router} from '@angular/router';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 
 // Interface matching your DTOs
 interface PublicUserDataDto {
@@ -25,6 +32,25 @@ interface BusinessServicePreviewDto {
   mainPicture: string;
 }
 
+interface CategoryDto {
+  id: number;
+  name: string;
+}
+
+interface LocationDto {
+  id: number;
+  locationName: string;
+}
+
+interface FilterDto {
+  categoryName?: string;
+  location?: string;
+  username?: string;
+  serviceName?: string;
+  maxPrice?: number;
+  minPrice?: number;
+}
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -34,7 +60,14 @@ interface BusinessServicePreviewDto {
     MatGridListModule,
     MatProgressSpinnerModule,
     MatChipsModule,
-    HttpClientModule
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatExpansionModule,
+    MatIconModule,
+    HttpClientModule,
+    ReactiveFormsModule
   ],
   templateUrl: './home.html',
   styleUrl: './home.css'
@@ -42,33 +75,177 @@ interface BusinessServicePreviewDto {
 export class Home implements OnInit {
 
   services: BusinessServicePreviewDto[] = [];
+  categories: CategoryDto[] = [];
+  locations: LocationDto[] = [];
   loading = true;
   error: string | null = null;
+  filterForm: FormGroup;
 
-  private apiUrl = 'http://localhost:8080/api/services/getAll'
+  private servicesApiUrl = 'http://localhost:8080/api/services';
+  private metadataApiUrl = 'http://localhost:8080/api/metadata';
 
-  constructor(private http: HttpClient, private router: Router) {}
-
-  ngOnInit(): void {
-    this.loadServices();
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private fb: FormBuilder
+  ) {
+    this.filterForm = this.fb.group({
+      serviceName: [''],
+      username: [''],
+      categoryName: [''],
+      location: [''],
+      minPrice: ['', [Validators.min(0)]],
+      maxPrice: ['', [Validators.min(0)]]
+    });
   }
 
-  loadServices(): void {
+  ngOnInit(): void {
+    this.loadInitialData();
+  }
+
+  loadInitialData(): void {
+    // Load all services and metadata in parallel
+    Promise.all([
+      this.loadServices(),
+      this.loadCategories(),
+      this.loadLocations()
+    ]).catch(err => {
+      console.error('Error loading initial data:', err);
+    });
+  }
+
+  loadServices(): Promise<void> {
     this.loading = true;
     this.error = null;
 
-    this.http.get<BusinessServicePreviewDto[]>(this.apiUrl).subscribe({
+    return new Promise((resolve, reject) => {
+      this.http.get<BusinessServicePreviewDto[]>(`${this.servicesApiUrl}/getAll`).subscribe({
+        next: (data) => {
+          this.services = data;
+          console.log(this.services, '------------------');
+          this.loading = false;
+          resolve();
+        },
+        error: (err) => {
+          this.error = 'Failed to load services. Please try again later.';
+          this.loading = false;
+          console.error('Error loading services:', err);
+          reject(err);
+        }
+      });
+    });
+  }
+
+  loadCategories(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.http.get<CategoryDto[]>(`${this.metadataApiUrl}/categories`).subscribe({
+        next: (data) => {
+          this.categories = data;
+          console.log('Categories loaded:', this.categories);
+          resolve();
+        },
+        error: (err) => {
+          console.error('Error loading categories:', err);
+          reject(err);
+        }
+      });
+    });
+  }
+
+  loadLocations(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.http.get<LocationDto[]>(`${this.metadataApiUrl}/locations`).subscribe({
+        next: (data) => {
+          this.locations = data;
+          console.log('Locations loaded:', this.locations);
+          resolve();
+        },
+        error: (err) => {
+          console.error('Error loading locations:', err);
+          reject(err);
+        }
+      });
+    });
+  }
+
+  onSearch(): void {
+    if (this.filterForm.invalid) {
+      this.markFormGroupTouched();
+      return;
+    }
+
+    // Validate price range
+    const minPrice = this.filterForm.get('minPrice')?.value;
+    const maxPrice = this.filterForm.get('maxPrice')?.value;
+
+    if (minPrice && maxPrice && parseFloat(minPrice) > parseFloat(maxPrice)) {
+      this.error = 'Minimum price cannot be greater than maximum price.';
+      return;
+    }
+
+    this.loading = true;
+    this.error = null;
+
+    // Build filter object, only including non-empty values
+    const formValues = this.filterForm.value;
+    const filterDto: FilterDto = {};
+
+    if (formValues.serviceName?.trim()) {
+      filterDto.serviceName = formValues.serviceName.trim();
+    }
+    if (formValues.username?.trim()) {
+      filterDto.username = formValues.username.trim();
+    }
+    if (formValues.categoryName) {
+      filterDto.categoryName = formValues.categoryName;
+    }
+    if (formValues.location) {
+      filterDto.location = formValues.location;
+    }
+    if (formValues.minPrice) {
+      filterDto.minPrice = parseFloat(formValues.minPrice);
+    }
+    if (formValues.maxPrice) {
+      filterDto.maxPrice = parseFloat(formValues.maxPrice);
+    }
+
+    console.log('Searching with filters:', filterDto);
+
+    this.http.post<BusinessServicePreviewDto[]>(`${this.servicesApiUrl}/getByCriteria`, filterDto).subscribe({
       next: (data) => {
         this.services = data;
-        console.log(this.services, '------------------')
         this.loading = false;
+        console.log('Filtered services:', this.services);
       },
       error: (err) => {
-        this.error = 'Failed to load services. Please try again later.';
+        this.error = 'Failed to search services. Please try again later.';
         this.loading = false;
-        console.error('Error loading services:', err);
+        console.error('Error searching services:', err);
       }
     });
+  }
+
+  onClear(): void {
+    this.filterForm.reset();
+    this.error = null;
+    this.loadServices();
+  }
+
+  private markFormGroupTouched(): void {
+    Object.keys(this.filterForm.controls).forEach(key => {
+      const control = this.filterForm.get(key);
+      control?.markAsTouched();
+    });
+  }
+
+  getFieldError(fieldName: string): string {
+    const field = this.filterForm.get(fieldName);
+    if (field?.errors && field.touched) {
+      if (field.errors['min']) {
+        return `${fieldName} must be greater than or equal to 0`;
+      }
+    }
+    return '';
   }
 
   getFullName(user: PublicUserDataDto): string {

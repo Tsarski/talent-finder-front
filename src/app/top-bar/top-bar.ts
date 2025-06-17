@@ -5,11 +5,12 @@ import {Router, RouterModule} from '@angular/router';
 import {UserService} from '../services/user.service';
 import {CommonModule} from '@angular/common';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'app-top-bar',
   standalone: true,
-  imports: [MatToolbarModule, MatButtonModule, RouterModule, CommonModule],
+    imports: [MatToolbarModule, MatButtonModule, RouterModule, CommonModule, MatIcon],
   templateUrl: './top-bar.html',
   styleUrl: './top-bar.css'
 })

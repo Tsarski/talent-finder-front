@@ -1,15 +1,82 @@
 .spacer {
   flex: 1 1 auto;
 }
+
 .brand {
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
-.custom-toolbar{
-  background-color: #245451;
+
+.custom-toolbar {
+  background-color: #3f51b5;
   color: #eeeeee;
+  padding: 0 20px;
 }
 
 .custom-button {
   color: white;
+  margin-left: 8px;
+}
+
+.add-service-button {
+  background-color: #1976d2;
+  color: white;
+  margin-left: 16px;
+  margin-right: 8px;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 0 16px;
+  min-width: 120px;
+  transition: all 0.3s ease;
+}
+
+.add-service-button:hover {
+  background-color: #1565c0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+}
+
+.add-service-button mat-icon {
+  margin-right: 8px;
+  font-size: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .custom-toolbar {
+    padding: 0 12px;
+  }
+
+  .add-service-button {
+    min-width: auto;
+    padding: 0 12px;
+    margin-left: 8px;
+  }
+
+  .add-service-button .mat-button-wrapper {
+    display: flex;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand {
+    font-size: 1rem;
+  }
+
+  .custom-button {
+    font-size: 0.9rem;
+    margin-left: 4px;
+  }
+
+  .add-service-button {
+    font-size: 0.9rem;
+    padding: 0 8px;
+    margin-left: 4px;
+  }
+
+  .add-service-button mat-icon {
+    margin-right: 4px;
+    font-size: 18px;
+  }
 }
