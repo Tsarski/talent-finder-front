@@ -1,0 +1,212 @@
+<div class="create-service-container">
+  <div class="header-section">
+    <h1>Create New Service</h1>
+    <p>Share your talent with the world</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading form data...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error && !loading" class="error-container">
+    <p class="error-message">{{ error }}</p>
+  </div>
+
+  <!-- Create Service Form -->
+  <mat-card *ngIf="!loading" class="form-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>add_business</mat-icon>
+        Service Details
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()" class="service-form">
+
+        <!-- Basic Information Section -->
+        <div class="form-section">
+          <h3 class="section-title">Basic Information</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Service Title</mat-label>
+              <input matInput
+                     formControlName="title"
+                     placeholder="Enter a descriptive title for your service"
+                     maxlength="100">
+              <mat-icon matSuffix>title</mat-icon>
+              <mat-hint align="end">{{ serviceForm.get('title')?.value?.length || 0 }}/100</mat-hint>
+              <mat-error *ngIf="getFieldError('title')">
+                {{ getFieldError('title') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Description</mat-label>
+              <textarea matInput
+                        formControlName="description"
+                        placeholder="Describe your service in detail..."
+                        rows="4"
+                        maxlength="1000">
+              </textarea>
+              <mat-icon matSuffix>description</mat-icon>
+              <mat-hint align="end">{{ serviceForm.get('description')?.value?.length || 0 }}/1000</mat-hint>
+              <mat-error *ngIf="getFieldError('description')">
+                {{ getFieldError('description') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Price (€)</mat-label>
+              <input matInput
+                     type="number"
+                     formControlName="price"
+                     placeholder="0.00"
+                     min="0.01"
+                     step="0.01">
+              <mat-icon matSuffix>euro</mat-icon>
+              <mat-error *ngIf="getFieldError('price')">
+                {{ getFieldError('price') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Category and Location Section -->
+        <div class="form-section">
+          <h3 class="section-title">Category & Location</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Category</mat-label>
+              <mat-select formControlName="serviceCategory">
+                <mat-option *ngFor="let category of categories" [value]="category.name">
+                  {{ category.name }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>category</mat-icon>
+              <mat-error *ngIf="getFieldError('serviceCategory')">
+                {{ getFieldError('serviceCategory') }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Location</mat-label>
+              <mat-select formControlName="location">
+                <mat-option *ngFor="let location of locations" [value]="location.locationName">
+                  {{ location.locationName }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>location_on</mat-icon>
+              <mat-error *ngIf="getFieldError('location')">
+                {{ getFieldError('location') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Images Section -->
+        <div class="form-section">
+          <h3 class="section-title">Images</h3>
+          <p class="section-description">Upload up to 5 images (JPEG, PNG, JPG - max 5MB each)</p>
+
+          <div class="image-upload-section">
+            <input type="file"
+                   #fileInput
+                   (change)="onFileSelected($event)"
+                   accept="image/jpeg,image/png,image/jpg"
+                   multiple
+                   style="display: none;">
+
+            <button type="button"
+                    mat-stroked-button
+                    color="primary"
+                    (click)="fileInput.click()">
+              <mat-icon>cloud_upload</mat-icon>
+              Select Images
+            </button>
+          </div>
+
+          <!-- Image Previews -->
+          <div *ngIf="previewUrls.length > 0" class="image-previews">
+            <div *ngFor="let url of previewUrls; let i = index" class="image-preview">
+              <img [src]="url" [alt]="'Preview ' + (i + 1)">
+              <button type="button"
+                      mat-icon-button
+                      color="warn"
+                      (click)="removeImage(i)"
+                      class="remove-image-btn">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Links Section -->
+        <div class="form-section">
+          <h3 class="section-title">Video Links (Optional)</h3>
+          <p class="section-description">Add YouTube video links to showcase your service</p>
+
+          <div formArrayName="videoLinks">
+            <div *ngFor="let videoLink of videoLinksArray.controls; let i = index" class="video-link-row">
+              <mat-form-field appearance="outline" class="video-field">
+                <mat-label>YouTube Video URL</mat-label>
+                <input matInput
+                       [formControlName]="i"
+                       placeholder="https://www.youtube.com/watch?v=...">
+                <mat-icon matSuffix>video_library</mat-icon>
+                <mat-error *ngIf="getVideoLinkError(i)">
+                  {{ getVideoLinkError(i) }}
+                </mat-error>
+              </mat-form-field>
+
+              <button type="button"
+                      mat-icon-button
+                      color="warn"
+                      (click)="removeVideoLinkField(i)"
+                      [disabled]="videoLinksArray.length === 1">
+                <mat-icon>remove</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <button type="button"
+                  mat-stroked-button
+                  (click)="addVideoLinkField()"
+                  [disabled]="videoLinksArray.length >= 5">
+            <mat-icon>add</mat-icon>
+            Add Video Link
+          </button>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="button"
+                  mat-stroked-button
+                  (click)="onCancel()"
+                  [disabled]="submitting">
+            <mat-icon>cancel</mat-icon>
+            Cancel
+          </button>
+
+          <button type="submit"
+                  mat-raised-button
+                  color="primary"
+                  [disabled]="serviceForm.invalid || submitting || selectedFiles.length === 0">
+            <mat-icon>save</mat-icon>
+            <span *ngIf="!submitting">Create Service</span>
+            <span *ngIf="submitting">Creating...</span>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

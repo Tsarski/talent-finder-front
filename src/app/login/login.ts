@@ -52,10 +52,9 @@ export class Login {
       next: (response) => {
         console.log('Login successful');
 
-        // Save the JWT token
         this.userService.saveToken(response.jwt);
+        this.userService.saveUsername(response.username);
 
-        // Show success message
         this.snackBar.open('Login successful!', 'Close', {
           duration: 3000,
           panelClass: ['success-snackbar']

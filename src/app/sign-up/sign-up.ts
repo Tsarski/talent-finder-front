@@ -36,7 +36,6 @@ export class SignUp {
 
   onSubmit(): void {
     if (this.signUpForm.valid) {
-      // const user: UserProfileDto = this.signUpForm.value;
       const rawValue = this.signUpForm.value;
 
       const user: UserProfileDto = {

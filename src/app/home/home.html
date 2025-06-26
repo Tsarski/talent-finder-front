@@ -14,7 +14,6 @@
     </mat-expansion-panel-header>
 
     <form [formGroup]="filterForm" class="filter-form">
-      <!-- Search by Service Title -->
       <div class="filter-row">
         <mat-form-field appearance="outline" class="filter-field">
           <mat-label>Search by Service Title</mat-label>
@@ -24,7 +23,6 @@
           <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
 
-        <!-- Search by Username -->
         <mat-form-field appearance="outline" class="filter-field">
           <mat-label>Search by Owner Username</mat-label>
           <input matInput
@@ -34,7 +32,6 @@
         </mat-form-field>
       </div>
 
-      <!-- Category and Location Dropdowns -->
       <div class="filter-row">
         <mat-form-field appearance="outline" class="filter-field">
           <mat-label>Category</mat-label>
@@ -59,7 +56,6 @@
         </mat-form-field>
       </div>
 
-      <!-- Price Range -->
       <div class="filter-row">
         <mat-form-field appearance="outline" class="filter-field price-field">
           <mat-label>Min Price (€)</mat-label>
@@ -90,7 +86,6 @@
         </mat-form-field>
       </div>
 
-      <!-- Action Buttons -->
       <div class="filter-actions">
         <button mat-raised-button
                 color="primary"

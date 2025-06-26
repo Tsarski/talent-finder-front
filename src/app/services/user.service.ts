@@ -19,6 +19,7 @@ export interface AuthenticationRequestDto {
 
 export interface AuthenticationResponse {
   jwt: string;
+  username: string;
 }
 
 @Injectable({
@@ -40,12 +41,24 @@ export class UserService {
     localStorage.setItem('jwt_token', token);
   }
 
+  saveUsername(username: string): void {
+    localStorage.setItem('username', username);
+  }
+
   getToken(): string | null {
     return localStorage.getItem('jwt_token');
   }
 
+  getUsername() : string | null {
+    return localStorage.getItem('username');
+  }
+
   removeToken(): void {
     localStorage.removeItem('jwt_token');
+  }
+
+  removeUsername(): void {
+    localStorage.removeItem('username');
   }
 
   isLoggedIn(): boolean {
@@ -64,5 +77,6 @@ export class UserService {
 
   logout(): void {
     this.removeToken();
+    this.removeUsername();
   }
 }

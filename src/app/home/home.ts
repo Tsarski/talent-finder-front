@@ -174,7 +174,6 @@ export class Home implements OnInit {
       return;
     }
 
-    // Validate price range
     const minPrice = this.filterForm.get('minPrice')?.value;
     const maxPrice = this.filterForm.get('maxPrice')?.value;
 
@@ -186,7 +185,6 @@ export class Home implements OnInit {
     this.loading = true;
     this.error = null;
 
-    // Build filter object, only including non-empty values
     const formValues = this.filterForm.value;
     const filterDto: FilterDto = {};
 
